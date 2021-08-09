@@ -112,7 +112,7 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         isPlaying = true;
-        //StartCoroutine(MoveAll());
+        StartCoroutine(MoveAll());
         UIController.instance.ShowHideWelcomePanel(false);
         UIController.instance.ShowHideInGameScreen(true);
         GetComponent<Timer>().timerIsRunning = true;
