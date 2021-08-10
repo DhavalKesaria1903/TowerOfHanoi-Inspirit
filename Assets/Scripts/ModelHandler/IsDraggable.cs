@@ -7,6 +7,8 @@ public class IsDraggable : MonoBehaviour
     public bool drag = false;
     private Vector3 currentDiskPosition;
 
+    public string curretSelectedPole;
+
     private void Awake()
     {
         currentDiskPosition = gameObject.transform.position;
@@ -43,6 +45,7 @@ public class IsDraggable : MonoBehaviour
             DragDropScript.instance.getTarget == gameObject)
         {
             GameController.instance.checkTheCurrentMove(gameObject);
+            curretSelectedPole = other.name;
             //Debug.Log(other.name);
         }
     }

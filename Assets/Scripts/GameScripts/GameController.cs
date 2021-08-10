@@ -86,7 +86,7 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// If want to freeze the input
     /// </summary>
-    public bool freezeInput = false;
+    public bool freezeInput = true;
 
     private void Awake()
     {
@@ -94,6 +94,7 @@ public class GameController : MonoBehaviour
         {
             instance = this;
         }
+        freezeInput = true;
     }
 
     // Start is called before the first frame update
@@ -137,6 +138,7 @@ public class GameController : MonoBehaviour
         UIController.instance.ShowHideWelcomePanel(false);
         UIController.instance.ShowHideInGameScreen(true);
         GetComponent<Timer>().timerIsRunning = true;
+        freezeInput = false;
     }
 
     IEnumerator MoveAll()
@@ -195,8 +197,9 @@ public class GameController : MonoBehaviour
 
     public bool IsDiskIsAtCorrectLocation(GameObject disk)
     {
-        if (disk.transform.position.x - 0.5f < posBSeq[currentMove].x &&
-            disk.transform.position.x + 0.5f > posBSeq[currentMove].x)
+        if(posBSeq[currentMove].x > 1.0f && disk.GetComponent<IsDraggable>().curretSelectedPole == "Pillar3" ||
+            posBSeq[currentMove].x < -1.0f && disk.GetComponent<IsDraggable>().curretSelectedPole == "Pillar1" ||
+            posBSeq[currentMove].x > -0.5f && posBSeq[currentMove].x < 0.5f && disk.GetComponent<IsDraggable>().curretSelectedPole == "Pillar2")
         {
             return true;
         }
