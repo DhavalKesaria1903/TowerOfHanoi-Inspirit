@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class UIController : MonoBehaviour
 {
@@ -11,7 +12,11 @@ public class UIController : MonoBehaviour
     [SerializeField] GameObject instructionPanel;
     [SerializeField] GameObject pauseScreen;
     [SerializeField] GameObject inGameScreen;
+    [SerializeField] GameObject gameOverPanel;
+    [SerializeField] Text winngText;
     [SerializeField] Text timerText;
+    [SerializeField] Text totalSteps;
+    [SerializeField] RectTransform wrongMoveIndication;
 
     private void Awake()
     {
@@ -19,18 +24,6 @@ public class UIController : MonoBehaviour
         {
             instance = this;
         }
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void ShowHideInstruction(bool visiblity)
@@ -69,13 +62,19 @@ public class UIController : MonoBehaviour
         pauseScreen.SetActive(visiblity);
     }
 
+    public void ShowTotalCount(int steps)
+    {
+        totalSteps.text = "Total Step\n" + steps.ToString();
+    }
+
     public void ShowHideInGameScreen(bool visiblity)
     {
         inGameScreen.SetActive(visiblity);
     }
 
-    public void GameOver()
-    { 
-        //TODO add the logic for UI when game is Over
+    public void GameOver(string winningText)
+    {
+        winngText.text = winningText;
+        gameOverPanel.SetActive(true);
     }
 }
