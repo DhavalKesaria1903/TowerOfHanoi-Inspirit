@@ -4,22 +4,28 @@ using UnityEngine;
 
 public class DragDropScript : MonoBehaviour
 {
+    public static DragDropScript instance;
 
     //Initialize Variables
-    GameObject getTarget;
-    bool isMouseDragging;
+    [HideInInspector]
+    public GameObject getTarget;
+    [HideInInspector]
+    public bool isMouseDragging = false;
+
     Vector3 offsetValue;
     Vector3 positionOfScreen;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
-
+        if (instance == null)
+        {
+            instance = this;
+        }
     }
 
     void Update()
     {
-
         //Mouse Button Press Down
         if (Input.GetMouseButtonDown(0))
         {
@@ -27,10 +33,14 @@ public class DragDropScript : MonoBehaviour
             getTarget = ReturnClickedObject(out hitInfo);
             if (getTarget != null && getTarget.tag == "HanoiCube")
             {
-                isMouseDragging = true;
-                //Converting world position to screen position.
-                positionOfScreen = Camera.main.WorldToScreenPoint(getTarget.transform.position);
-                offsetValue = getTarget.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, positionOfScreen.z));
+                if (getTarget.GetComponent<IsDraggable>().drag)
+                {
+                    isMouseDragging = true;
+                    //Converting world position to screen position.
+                    positionOfScreen = Camera.main.WorldToScreenPoint(getTarget.transform.position);
+                    offsetValue = getTarget.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, positionOfScreen.z));
+                }
+
             }
         }
 
@@ -38,6 +48,10 @@ public class DragDropScript : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             isMouseDragging = false;
+            if (getTarget != null)
+            {
+                UIController.instance.ShowTotalCount((GameController.instance.totalCount++) - 1);
+            }
         }
 
         //Is mouse Moving

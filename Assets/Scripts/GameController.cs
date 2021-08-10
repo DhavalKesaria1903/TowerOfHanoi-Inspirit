@@ -67,6 +67,17 @@ public class GameController : MonoBehaviour
     /// </summary>
     int state = 0;
 
+    /// <summary>
+    /// Save the current movement Index
+    /// </summary>
+    int currentMove = 0;
+
+    /// <summary>
+    /// Total user move count
+    /// </summary>
+    [HideInInspector]
+    public int totalCount = 0;
+
     private void Awake()
     {
         if (instance == null)
@@ -96,7 +107,7 @@ public class GameController : MonoBehaviour
 
         for (int i = 0; i < Mathf.Pow(2, totalDisks) - 1; i++)
         {
-            Debug.Log("Move disk " + diskSeq[i] + " from " + posASeq[i] + " to " + posBSeq[i]);
+            //Debug.Log("Move disk " + diskSeq[i] + " from " + posASeq[i] + " to " + posBSeq[i]);
         }
     }
 
@@ -120,7 +131,7 @@ public class GameController : MonoBehaviour
 
     IEnumerator MoveAll()
     {
-        Debug.Log("Pow = " + (Mathf.Pow(2, totalDisks) - 2));
+        //Debug.Log("Pow = " + (Mathf.Pow(2, totalDisks) - 2));
         for (int i = 0; i < Mathf.Pow(2, totalDisks) - 1; i++)
         {
             yield return StartCoroutine(Move(diskSeq[i], posASeq[i], posBSeq[i]));
@@ -149,6 +160,39 @@ public class GameController : MonoBehaviour
         posBSeq[currentSequence].Set(to.x, to.y, to.z);
     }
 
+    public void checkTheCurrentMove(GameObject disk)
+    {
+        if (disk != null)
+        {
+            if (!DragDropScript.instance.isMouseDragging && IsDiskIsAtCorrectLocation(disk))
+            {
+                if (disk == diskSeq[currentMove])
+                {
+                    StartCoroutine(Move(diskSeq[currentMove], disk.transform.position, posBSeq[currentMove]));
+                    currentMove++;
+                    DragDropScript.instance.getTarget = null;
+                }
+            }
+            else
+            {
+                disk.GetComponent<IsDraggable>().ResetToPosition();
+                return;
+            }
+        }
+    }
+
+    public bool IsDiskIsAtCorrectLocation(GameObject disk)
+    {
+        if (disk.transform.position.x - 0.5f < posBSeq[currentMove].x &&
+            disk.transform.position.x + 0.5f > posBSeq[currentMove].x)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     IEnumerator Move(GameObject disk, Vector3 posA, Vector3 posB)
     {
@@ -162,11 +206,15 @@ public class GameController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(posB + Vector3.down * 2, Vector3.down, out hit, 6))
         {
-            Debug.Log(hit.collider.name);
-            Debug.DrawRay(posB + Vector3.down * 2, Vector3.down, Color.black);
-            Debug.Log(">>>>" + "Name = " + hit.collider.name + " & Position = " + hit.point + Vector3.up * .12f);
             disk.transform.DOMove(hit.point + Vector3.up * .3f, 2 / speed);
             yield return new WaitForSeconds(2 / speed);
+        }
+
+        disk.GetComponent<IsDraggable>().SetNewPosition();
+
+        if (currentMove == Mathf.Pow(2, totalDisks) - 2)
+        {
+            GameOver("Great! \nYou have sucessfully solved the Tower of Hanoi!");
         }
     }
 
@@ -183,5 +231,12 @@ public class GameController : MonoBehaviour
     public void RestartGame()
     {
         //TODO: Add logic for Restarting the game
+        SceneManager.LoadScene("LoadingScene");
+    }
+
+    public void GameOver(string gameOverMessage)
+    {
+        StopAllCoroutines();
+        UIController.instance.GameOver(gameOverMessage);
     }
 }
