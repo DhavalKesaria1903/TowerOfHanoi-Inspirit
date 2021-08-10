@@ -51,6 +51,10 @@ public class DragDropScript : MonoBehaviour
             if (getTarget != null)
             {
                 UIController.instance.ShowTotalCount((GameController.instance.totalCount++) - 1);
+                if (GameController.instance.isStepCorrect)
+                {
+                    UIController.instance.ShowWrongMove();
+                }
             }
         }
 

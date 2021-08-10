@@ -67,6 +67,18 @@ public class UIController : MonoBehaviour
         totalSteps.text = "Total Step\n" + steps.ToString();
     }
 
+    public void ShowWrongMove()
+    {
+        StartCoroutine(ShowWrongImage());
+    }
+
+    IEnumerator ShowWrongImage()
+    {
+        wrongMoveIndication.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1);
+        wrongMoveIndication.gameObject.SetActive(false);
+    }
+
     public void ShowHideInGameScreen(bool visiblity)
     {
         inGameScreen.SetActive(visiblity);

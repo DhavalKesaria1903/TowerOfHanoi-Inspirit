@@ -78,6 +78,11 @@ public class GameController : MonoBehaviour
     [HideInInspector]
     public int totalCount = 0;
 
+    /// <summary>
+    /// Check For The Correct Step
+    /// </summary>
+    public bool isStepCorrect = false;
+
     private void Awake()
     {
         if (instance == null)
@@ -171,6 +176,7 @@ public class GameController : MonoBehaviour
                     StartCoroutine(Move(diskSeq[currentMove], disk.transform.position, posBSeq[currentMove]));
                     currentMove++;
                     DragDropScript.instance.getTarget = null;
+                    isStepCorrect = true;
                 }
             }
             else
