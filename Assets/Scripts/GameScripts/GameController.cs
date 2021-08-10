@@ -83,6 +83,11 @@ public class GameController : MonoBehaviour
     /// </summary>
     public bool isStepCorrect = false;
 
+    /// <summary>
+    /// If want to freeze the input
+    /// </summary>
+    public bool freezeInput = false;
+
     private void Awake()
     {
         if (instance == null)
