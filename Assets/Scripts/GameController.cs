@@ -173,10 +173,11 @@ public class GameController : MonoBehaviour
             {
                 if (disk == diskSeq[currentMove])
                 {
+                    isStepCorrect = true;
+                    UIController.instance.ShowWrongMove(false);
                     StartCoroutine(Move(diskSeq[currentMove], disk.transform.position, posBSeq[currentMove]));
                     currentMove++;
                     DragDropScript.instance.getTarget = null;
-                    isStepCorrect = true;
                 }
             }
             else
@@ -217,6 +218,8 @@ public class GameController : MonoBehaviour
         }
 
         disk.GetComponent<IsDraggable>().SetNewPosition();
+
+        isStepCorrect = false;
 
         if (currentMove == Mathf.Pow(2, totalDisks) - 2)
         {
